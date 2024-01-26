@@ -114,7 +114,9 @@ function cmg_preconditioner_lap(A_lap::SparseMatrixCSC)
 end
 
 function cmg_preconditioner_adj(A::SparseMatrixCSC)
-    cmg_preconditioner_lap(lap(A))
+    local n = size(A, 1)
+    local A_lap = sparse(Diagonal(A * ones(n))) - A
+    cmg_preconditioner_lap(A_lap)
 end
 
 function cmg_!(A::T, A_::T) where {T<:SparseMatrixCSC}
