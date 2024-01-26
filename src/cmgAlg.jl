@@ -127,6 +127,8 @@ function cmg_!(A::T, A_::T) where {T<:SparseMatrixCSC}
     local h_nnz::Int = 0
     while true
         local n = size(A_, 1)
+        # TODO(pratyai): Disable the direct method shortcut since there are problems (e.g. `netgen_8_13d.min.gz`) for which it does not behave well with `pcg()` (needs `--check-bounds=yes` for it to manifest, and even them it's not reliably reproducible)
+        #=
         if n < 500  # direct method for small size
             local B = A_[1:n-1, 1:n-1]
             local ldlt = ldl(B)
@@ -147,6 +149,7 @@ function cmg_!(A::T, A_::T) where {T<:SparseMatrixCSC}
             )
             break
         end
+        =#
 
         local dA_ = Array(diag(A_))
         local cI, nc = steiner_group(A_, dA_)
