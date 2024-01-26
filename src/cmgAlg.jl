@@ -289,7 +289,8 @@ function steiner_group(A::SparseMatrixCSC, dA_::Vector{Float64})
     split_forest_!(C)
     local efd = abs.(M ./ dA_)
     if minimum(efd) < 1.0 / 8 # low effective degree nodes found
-        C = update_groups_(A, C, dA_)
+        # TODO(pratyai): Disable contractions since there are problems (e.g. `netgen_8_13d.min.gz`) for which it does not behave well with `pcg()` (needs `--check-bounds=yes` for it to manifest, and even them it's not reliably reproducible)
+        # C = update_groups_(A, C, dA_)
     end
     local cI, nc, _ = forest_components_(C)
     return cI, nc
