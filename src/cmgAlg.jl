@@ -243,7 +243,7 @@ function validateInput!(A::SparseMatrixCSC)::SparseMatrixCSC
     # detect strict dominance && positive off diagonals
     local n = size(A, 1)
     local sAp = Vector{Float64}(undef, n)
-    local sd = Vector{Int64}(undef, n)
+    local sd = Vector{Bool}(undef, n)
     local dA = diag(A)
 
     local res = findRowSumAndDominance(A)
@@ -259,7 +259,7 @@ function validateInput!(A::SparseMatrixCSC)::SparseMatrixCSC
 
     @inbounds @simd for i = 1:length(sA)
         sAp[i] = (sA[i] + abs(sA[i])) / 2
-        sd[i] = (sAp[i] / dA[i]) > 1e-13 ? 1 : 0
+        sd[i] = (sAp[i] / dA[i]) > 1e-13
     end
 
     # augment by extra coordinate if strictly dominant
